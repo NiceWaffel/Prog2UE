@@ -1,0 +1,3 @@
+/home/simon/develop/cpp/Bibliothek/CMakeFiles/rebuild_cache.dir
+/home/simon/develop/cpp/Bibliothek/CMakeFiles/Main.dir
+/home/simon/develop/cpp/Bibliothek/CMakeFiles/edit_cache.dir
