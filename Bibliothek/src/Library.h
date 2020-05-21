@@ -13,12 +13,14 @@ class Library {
         Inventory m_inv;
         std::vector<Customer> m_customers;
 
-        void print_error();
+        std::string m_login_username;
     public:
         Library();
         ~Library();
-        int lend_book(int book_id, int customer_id);
-        std::vector<Book> search();
-        int check_creds(Credentials creds);
+        int lend(int lendable_id, int customer_id);
+        std::vector<Lendable> search();
+        int login(Credentials creds);
 
+        std::string get_login_name();
+        std::string get_customer_name(int id);
 };

@@ -1,41 +1,37 @@
 #include "Inventory.h"
 
 /* Adds a book the the list of books and returns it's assigned ID */
-int Inventory::add_book(std::string title, std::string author, int year) {
-    Book b;
-    b.title = title;
-    b.author = author;
-    b.year = year;
-    b.lent_to = 0; // lent to noone for now
+void Inventory::add_item(Lendable item) {
 
-    unsigned int id = std::rand();
-    id = (id << 16) + std::rand();
-    // FIXME No check for duplicate ids
+//    do {
+//        // Generate new id for item
+//    } while(id_exists);
 
-    // TODO add in ordered fashion
-    m_books.push_back(b);
-
-    return id;
+    m_items.push_back(item);
 }
 
 /* Removes a book with a given id */
-void Inventory::remove_book(int id) {
-
+void Inventory::remove_item(unsigned int id) {
+    // TODO
 }
 
-/* Returns 0 on success and 1 on any
- * error (book was not found or already lent to someone) */
-int Inventory::lend_book(int id, Customer customer) {
-    for(int i = 0; i < m_books.size(); i++) {
-        if(id == m_books[i].ID && m_books[i].lent_to == 0) {
-            m_books[i].lent_to = customer.get_id();
+/* Returns 1 on success and 0 on any
+ * error (item was not found or already lent to someone) */
+int Inventory::lend_item(unsigned int item_id, Customer *customer) {
+    for(int i = 0; i < m_items.size(); i++) {
+        if(item_id == m_items[i].get_id()) {
+            // Lend item to customer if possible/allowed
+            if(customer->get_currently_lent().size() < 2 && m_items[i].lend_to(customer->get_id())) {
+                customer->add_item(item_id);
+                return 1;
+            }
             return 0;
         }
     }
-    return 1;
+    return 0;
 }
 
 /* Getter for the whole list of books */
-std::vector<Book> Inventory::get_books() {
-    return m_books;
+std::vector<Lendable> Inventory::get_items() {
+    return m_items;
 }
