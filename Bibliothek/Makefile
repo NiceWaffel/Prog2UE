@@ -48,10 +48,10 @@ RM = /usr/bin/cmake -E remove -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /home/simon/develop/cpp/Bibliothek
+CMAKE_SOURCE_DIR = /home/simon/develop/cpp/Uebungen/Prog2/Bibliothek
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /home/simon/develop/cpp/Bibliothek
+CMAKE_BINARY_DIR = /home/simon/develop/cpp/Uebungen/Prog2/Bibliothek
 
 #=============================================================================
 # Targets provided globally by CMake.
@@ -80,9 +80,9 @@ edit_cache/fast: edit_cache
 
 # The main all target
 all: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/simon/develop/cpp/Bibliothek/CMakeFiles /home/simon/develop/cpp/Bibliothek/CMakeFiles/progress.marks
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/simon/develop/cpp/Uebungen/Prog2/Bibliothek/CMakeFiles /home/simon/develop/cpp/Uebungen/Prog2/Bibliothek/CMakeFiles/progress.marks
 	$(MAKE) -f CMakeFiles/Makefile2 all
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/simon/develop/cpp/Bibliothek/CMakeFiles 0
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/simon/develop/cpp/Uebungen/Prog2/Bibliothek/CMakeFiles 0
 .PHONY : all
 
 # The main clean target
@@ -204,6 +204,33 @@ src/Library.cpp.s:
 	$(MAKE) -f CMakeFiles/Main.dir/build.make CMakeFiles/Main.dir/src/Library.cpp.s
 .PHONY : src/Library.cpp.s
 
+src/Person.o: src/Person.cpp.o
+
+.PHONY : src/Person.o
+
+# target to build an object file
+src/Person.cpp.o:
+	$(MAKE) -f CMakeFiles/Main.dir/build.make CMakeFiles/Main.dir/src/Person.cpp.o
+.PHONY : src/Person.cpp.o
+
+src/Person.i: src/Person.cpp.i
+
+.PHONY : src/Person.i
+
+# target to preprocess a source file
+src/Person.cpp.i:
+	$(MAKE) -f CMakeFiles/Main.dir/build.make CMakeFiles/Main.dir/src/Person.cpp.i
+.PHONY : src/Person.cpp.i
+
+src/Person.s: src/Person.cpp.s
+
+.PHONY : src/Person.s
+
+# target to generate assembly for a file
+src/Person.cpp.s:
+	$(MAKE) -f CMakeFiles/Main.dir/build.make CMakeFiles/Main.dir/src/Person.cpp.s
+.PHONY : src/Person.cpp.s
+
 src/Renderer.o: src/Renderer.cpp.o
 
 .PHONY : src/Renderer.o
@@ -276,6 +303,9 @@ help:
 	@echo "... src/Library.o"
 	@echo "... src/Library.i"
 	@echo "... src/Library.s"
+	@echo "... src/Person.o"
+	@echo "... src/Person.i"
+	@echo "... src/Person.s"
 	@echo "... src/Renderer.o"
 	@echo "... src/Renderer.i"
 	@echo "... src/Renderer.s"

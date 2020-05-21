@@ -6,5 +6,5 @@ CXX_FLAGS =   -std=gnu++17
 
 CXX_DEFINES = 
 
-CXX_INCLUDES = -I/home/simon/develop/cpp/Bibliothek/src 
+CXX_INCLUDES = -I/home/simon/develop/cpp/Uebungen/Prog2/Bibliothek/src 
 

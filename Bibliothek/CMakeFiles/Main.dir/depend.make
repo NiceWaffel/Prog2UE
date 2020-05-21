@@ -19,6 +19,9 @@ CMakeFiles/Main.dir/src/Library.cpp.o: src/Library.cpp
 CMakeFiles/Main.dir/src/Library.cpp.o: src/Library.h
 CMakeFiles/Main.dir/src/Library.cpp.o: src/Person.h
 
+CMakeFiles/Main.dir/src/Person.cpp.o: src/Person.cpp
+CMakeFiles/Main.dir/src/Person.cpp.o: src/Person.h
+
 CMakeFiles/Main.dir/src/Renderer.cpp.o: src/Renderer.cpp
 CMakeFiles/Main.dir/src/Renderer.cpp.o: src/Renderer.h
 

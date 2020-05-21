@@ -6,11 +6,11 @@
 
 #IncludeRegexTransform: 
 
-/home/simon/develop/cpp/Bibliothek/src/Book.h
+/home/simon/develop/cpp/Uebungen/Prog2/Bibliothek/src/Book.h
 string
 -
 
-/home/simon/develop/cpp/Bibliothek/src/Customer.h
+/home/simon/develop/cpp/Uebungen/Prog2/Bibliothek/src/Customer.h
 iostream
 -
 string
@@ -18,11 +18,11 @@ string
 vector
 -
 Book.h
-/home/simon/develop/cpp/Bibliothek/src/Book.h
+/home/simon/develop/cpp/Uebungen/Prog2/Bibliothek/src/Book.h
 Person.h
-/home/simon/develop/cpp/Bibliothek/src/Person.h
+/home/simon/develop/cpp/Uebungen/Prog2/Bibliothek/src/Person.h
 
-/home/simon/develop/cpp/Bibliothek/src/Inventory.h
+/home/simon/develop/cpp/Uebungen/Prog2/Bibliothek/src/Inventory.h
 iostream
 -
 vector
@@ -30,21 +30,25 @@ vector
 cstdlib
 -
 Book.h
-/home/simon/develop/cpp/Bibliothek/src/Book.h
+/home/simon/develop/cpp/Uebungen/Prog2/Bibliothek/src/Book.h
 Customer.h
-/home/simon/develop/cpp/Bibliothek/src/Customer.h
+/home/simon/develop/cpp/Uebungen/Prog2/Bibliothek/src/Customer.h
 
-/home/simon/develop/cpp/Bibliothek/src/Library.h
+/home/simon/develop/cpp/Uebungen/Prog2/Bibliothek/src/Library.cpp
+Library.h
+/home/simon/develop/cpp/Uebungen/Prog2/Bibliothek/src/Library.h
+
+/home/simon/develop/cpp/Uebungen/Prog2/Bibliothek/src/Library.h
 iostream
 -
 Inventory.h
-/home/simon/develop/cpp/Bibliothek/src/Inventory.h
+/home/simon/develop/cpp/Uebungen/Prog2/Bibliothek/src/Inventory.h
 
-/home/simon/develop/cpp/Bibliothek/src/Person.h
+/home/simon/develop/cpp/Uebungen/Prog2/Bibliothek/src/Person.h
 string
 -
 
-/home/simon/develop/cpp/Bibliothek/src/Renderer.h
+/home/simon/develop/cpp/Uebungen/Prog2/Bibliothek/src/Renderer.h
 ncurses.h
 -
 sys/ioctl.h
@@ -64,7 +68,7 @@ string
 vector
 -
 
-/home/simon/develop/cpp/Bibliothek/src/main.cpp
+/home/simon/develop/cpp/Uebungen/Prog2/Bibliothek/src/main.cpp
 iostream
 -
 string
@@ -78,7 +82,7 @@ cstring
 unistd.h
 -
 Renderer.h
-/home/simon/develop/cpp/Bibliothek/src/Renderer.h
+/home/simon/develop/cpp/Uebungen/Prog2/Bibliothek/src/Renderer.h
 Library.h
-/home/simon/develop/cpp/Bibliothek/src/Library.h
+/home/simon/develop/cpp/Uebungen/Prog2/Bibliothek/src/Library.h
 

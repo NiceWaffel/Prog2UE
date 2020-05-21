@@ -1,4 +1,4 @@
-# Install script for directory: /home/simon/develop/cpp/Bibliothek
+# Install script for directory: /home/simon/develop/cpp/Uebungen/Prog2/Bibliothek
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)
@@ -45,5 +45,5 @@ endif()
 
 string(REPLACE ";" "\n" CMAKE_INSTALL_MANIFEST_CONTENT
        "${CMAKE_INSTALL_MANIFEST_FILES}")
-file(WRITE "/home/simon/develop/cpp/Bibliothek/${CMAKE_INSTALL_MANIFEST}"
+file(WRITE "/home/simon/develop/cpp/Uebungen/Prog2/Bibliothek/${CMAKE_INSTALL_MANIFEST}"
      "${CMAKE_INSTALL_MANIFEST_CONTENT}")
