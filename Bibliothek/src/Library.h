@@ -1,6 +1,7 @@
 #pragma once
 
 #include <iostream>
+#include <fstream>
 #include "Inventory.h"
 
 struct Credentials {
@@ -10,17 +11,21 @@ struct Credentials {
 
 class Library {
     private:
-        Inventory m_inv;
-        std::vector<Customer> m_customers;
+        Inventory *m_inv;
+        Customer *m_me;
+        std::fstream *inv_file;
+        std::fstream *cust_file;
 
-        std::string m_login_username;
+        int check(Credentials creds);
     public:
-        Library();
+        Library(std::string path);
         ~Library();
-        int lend(int lendable_id, int customer_id);
-        std::vector<Lendable> search();
+        int lend(unsigned int lendable_id);
+        int give_back(unsigned int lendable_id);
+        std::vector<Lendable> search(std::string expr);
         int login(Credentials creds);
 
         std::string get_login_name();
         std::string get_customer_name(int id);
+        int get_my_id();
 };

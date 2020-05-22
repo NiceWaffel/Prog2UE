@@ -61,8 +61,16 @@ void redraw_listview(Library *lib, int selected_index, std::vector<Lendable> ite
     Renderer::scr_print(lib->get_login_name(), Renderer::get_rows() - 2, TABLE_POS_TYPE + 14, 50);
 
     // Print keybindings
+    std::string binds("Keybinds: f - find item  |  a - add item (if admin)  |  q - quit");
+    if(lib->get_login_name().compare("guest") == 0) {
+        binds += "  |  s - sign up";
+    }
     Renderer::scr_print("Keybinds: f - find item  |  a - add item (if admin)  |  q - quit",
                             Renderer::get_rows() - 1, TABLE_POS_TYPE, Renderer::get_cols());
+}
+
+void sign_up_screen(Library *lib) {
+
 }
 
 /* Main input loop for the list view */
@@ -71,7 +79,6 @@ void input_loop(Library *lib, Credentials *creds) {
     Renderer::cursor_hide(true);
     int selected_index = 0;
     std::vector<Lendable> shown_items;
-    // TODO
 
     Lendable l1(LENDABLE_TYPE_BOOK, "Harry Potter", 1999, 0);
     l1.set_id(1);
@@ -82,10 +89,7 @@ void input_loop(Library *lib, Credentials *creds) {
     Lendable l4(123, "", 123123123, 5);
     l4.set_id(4);
 
-    shown_items.push_back(l1);
-    shown_items.push_back(l2);
-    shown_items.push_back(l3);
-    shown_items.push_back(l4);
+
 
     while(1) {
         // Draw screen
@@ -100,6 +104,19 @@ void input_loop(Library *lib, Credentials *creds) {
                 break;
             case 'a': // add book when logged in as admin
                 // TODO
+                break;
+            case 's':
+                if(lib->get_login_name().compare("guest") == 0) { // If we are logged in as guest
+                    sign_up_screen(lib);
+                }
+                break;
+            case 10: // Enter
+                if(shown_items[selected_index].lent_to_id() == lib->get_my_id()) { // If already mine, give back
+                    lib->give_back(shown_items[selected_index].get_id());
+                }
+                else {
+                    lib->lend(shown_items[selected_index].get_id());
+                }
                 break;
             case 'q':
                 return;
@@ -163,20 +180,25 @@ int login_screen(Library *lib, Credentials *creds) {
                 // Illegal state for current_mode
                 return 0;
             }
+            continue;
         }
-        else if(c > 31 && c < 126 && current_pos < BUFFER_SIZE) {
+        else if(c == 8) { // Backspace
+            current_pos--;
+            string_buffer[current_pos] = 0x0;
+        }
+        else if(c > 32 && c < 126 && current_pos < BUFFER_SIZE) {
             string_buffer[current_pos] = c;
             current_pos++;
+        }
 
-            if(current_mode == 0) {
-                Renderer::scr_print(string_buffer, 0, 10, BUFFER_SIZE);
-                Renderer::scr_render();
-            }
-            else if(current_mode == 1) {
-                std::string stars(current_pos, '*');
-                Renderer::scr_print(stars, 1, 10, BUFFER_SIZE);
-                Renderer::scr_render();
-            }
+        if(current_mode == 0) {
+            Renderer::scr_print(string_buffer, 0, 10, BUFFER_SIZE);
+            Renderer::scr_render();
+        }
+        else if(current_mode == 1) {
+            std::string stars(current_pos, '*');
+            Renderer::scr_print(stars, 1, 10, BUFFER_SIZE);
+            Renderer::scr_render();
         }
     }
 }
@@ -190,7 +212,7 @@ int main() {
     	return 1;
     }
     
-    Library *lib = new Library();
+    Library *lib = new Library(".");
 
     int success;
     Credentials creds;
