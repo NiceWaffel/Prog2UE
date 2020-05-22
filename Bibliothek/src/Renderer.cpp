@@ -52,6 +52,10 @@ void Renderer::cleanup_renderer() {
 	endwin();
 }
 
+int Renderer::cursor_hide(bool hidden) {
+	return curs_set(!hidden);
+}
+
 /* Registers a callback function for resize events.
  * These functions need two integers as parameters for rows
  * and columns respectivly */

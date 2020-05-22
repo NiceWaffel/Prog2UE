@@ -27,6 +27,8 @@ class Renderer {
 		static int init_renderer();
 		static void cleanup_renderer();
 
+		static int cursor_hide(bool hidden);
+
 		static void register_resize_handler(void (*handler)(int, int));
 		
 		static int get_input();

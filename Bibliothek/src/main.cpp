@@ -68,6 +68,7 @@ void redraw_listview(Library *lib, int selected_index, std::vector<Lendable> ite
 /* Main input loop for the list view */
 void input_loop(Library *lib, Credentials *creds) {
     Renderer::scr_clear();
+    Renderer::cursor_hide(true);
     int selected_index = 0;
     std::vector<Lendable> shown_items;
     // TODO
