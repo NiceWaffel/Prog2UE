@@ -1,7 +1,8 @@
 #include "Customer.h"
 
-Customer::Customer(int id, std::string name, std::vector<unsigned int> lent) : Person(name) {
+Customer::Customer(int id, std::string name, std::vector<unsigned int> lent) {
     m_customer_ID = id;
+    m_name = name;
     m_currently_lent = lent;
 }
 

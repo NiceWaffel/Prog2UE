@@ -80,16 +80,7 @@ void input_loop(Library *lib, Credentials *creds) {
     int selected_index = 0;
     std::vector<Lendable> shown_items;
 
-    Lendable l1(LENDABLE_TYPE_BOOK, "Harry Potter", 1999, 0);
-    l1.set_id(1);
-    Lendable l2(LENDABLE_TYPE_VIDEOGAME, "GTA V", 2012, 0);
-    l2.set_id(2);
-    Lendable l3(LENDABLE_TYPE_AUDIOBOOK, "Die juten Sitten", 2019, 0);
-    l3.set_id(3);
-    Lendable l4(123, "", 123123123, 5);
-    l4.set_id(4);
-
-
+    shown_items = lib->search("");
 
     while(1) {
         // Draw screen

@@ -5,7 +5,7 @@
 
 #include "DynamicObject.h"
 
-class Door : DynamicObject {
+class Door : public DynamicObject {
 	private:
 		bool m_opened;
 	public:

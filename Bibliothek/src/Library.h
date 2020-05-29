@@ -2,6 +2,8 @@
 
 #include <iostream>
 #include <fstream>
+#include <regex>
+#include <vector>
 #include "Inventory.h"
 
 struct Credentials {

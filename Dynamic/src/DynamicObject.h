@@ -4,6 +4,8 @@
 
 class DynamicObject {
 	public:
-		virtual bool init();
-		virtual void update();
+		DynamicObject() {}
+		~DynamicObject() {}
+		virtual bool init() = 0;
+		virtual void update() = 0;
 };

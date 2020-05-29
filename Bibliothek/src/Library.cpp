@@ -7,29 +7,27 @@ Library::Library(std::string path) {
     inv_file = new std::fstream(path + "/items.txt", std::fstream::in | std::fstream::out);
     cust_file = new std::fstream(path + "/customers.txt");
 
-    char type_buffer[20];
-    char title_buffer[200];
-    char year_buffer[5];
-    char lent_to_buffer[20];
+    std::string line_buffer;
+
+    int b_type, b_year, b_lent_to;
+    char b_title[200];
 
     if(!inv_file || !cust_file) {
+        std::cout << "EXIT" << std::endl;
         exit(2);
     }
     else {
-        while(!inv_file->eof()) {
-            // read info into buffers
-            inv_file->get(type_buffer, 20, ':');
-            inv_file->get(title_buffer, 200, ':');
-            inv_file->get(year_buffer, 5, ':');
-            inv_file->get(lent_to_buffer, 20, ':');
-
-            // TODO create items and save in m_items
+        while(std::getline(*inv_file, line_buffer)) {
+            sscanf(line_buffer.c_str(), "%d:%200s:%d:%d", &b_type, b_title, &b_year, &b_lent_to);
+            Lendable it(b_type, b_title, b_year, b_lent_to);
+            m_inv->add_item(it);
         }
     }
 }
 
 Library::~Library() {
     delete m_inv;
+    delete cust_file;
     delete m_me;
 }
 
@@ -49,7 +47,8 @@ int Library::give_back(unsigned int lendable_id) {
 
 std::vector<Lendable> Library::search(std::string expr) {
     // TODO
-    return m_inv->get_items();
+    std::vector<Lendable> results;
+    return results;
 }
 
 /* Returns 1 if credentials were valid, 0 otherwise */

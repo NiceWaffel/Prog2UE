@@ -5,7 +5,7 @@
 
 #include "DynamicObject.h"
 
-class Radio : DynamicObject {
+class Radio : public DynamicObject {
 	private:
 		std::string m_current_track;
 	public:

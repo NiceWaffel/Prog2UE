@@ -2,10 +2,11 @@
 
 #include <iostream>
 #include <string>
+#include "DynamicObject.h"
 
 using namespace std;
 
-class Animal {
+class Animal : public DynamicObject {
 	protected:
 		string m_name;
 		int m_age;
