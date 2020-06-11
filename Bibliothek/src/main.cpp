@@ -61,12 +61,15 @@ void redraw_listview(Library *lib, int selected_index, std::vector<Lendable> ite
     Renderer::scr_print(lib->get_login_name(), Renderer::get_rows() - 2, TABLE_POS_TYPE + 14, 50);
 
     // Print keybindings
-    std::string binds("Keybinds: f - find item  |  a - add item (if admin)  |  q - quit");
-    if(lib->get_login_name().compare("guest") == 0) {
+    std::string binds("Keybinds: f - find item");
+    
+    if(lib->get_login_name().compare("guest") == 0)
         binds += "  |  s - sign up";
-    }
-    Renderer::scr_print("Keybinds: f - find item  |  a - add item (if admin)  |  q - quit",
-                            Renderer::get_rows() - 1, TABLE_POS_TYPE, Renderer::get_cols());
+    else if(lib->get_login_name().compare("admin") == 0)
+    	binds += "  |  a - add item";
+    binds += "  |  q - quit";
+    
+    Renderer::scr_print(binds, Renderer::get_rows() - 1, TABLE_POS_TYPE, Renderer::get_cols());
 }
 
 void sign_up_screen(Library *lib) {
@@ -74,13 +77,13 @@ void sign_up_screen(Library *lib) {
 }
 
 /* Main input loop for the list view */
-void input_loop(Library *lib, Credentials *creds) {
-    Renderer::scr_clear();
-    Renderer::cursor_hide(true);
+void input_loop(Library *lib) {
     int selected_index = 0;
     std::vector<Lendable> shown_items;
 
     shown_items = lib->search("");
+    
+    Renderer::scr_clear();
 
     while(1) {
         // Draw screen
@@ -131,7 +134,6 @@ int login_screen(Library *lib, Credentials *creds) {
     int current_mode = 0;
 
     Renderer::scr_clear();
-    Renderer::scr_print("Username: ", 0, 0, 10);
     Renderer::scr_render();
 
     char string_buffer[BUFFER_SIZE];
@@ -140,6 +142,10 @@ int login_screen(Library *lib, Credentials *creds) {
     // Init string_buffer to zero, so string ends at our last character
     memset(string_buffer, 0x0, BUFFER_SIZE);
 
+    Renderer::scr_clear();
+    Renderer::scr_print("Username: ", 0, 0, 10);
+    Renderer::scr_render();
+
     while(1) {
         int c = Renderer::get_input();
         if(c == 10) {
@@ -147,15 +153,14 @@ int login_screen(Library *lib, Credentials *creds) {
                 std::string uname(string_buffer);
                 creds->username = uname;
 
-                Renderer::scr_print("Password: ", 1, 0, 10);
-                Renderer::scr_render();
-
                 // Reset buffers
                 current_pos = 0;
                 memset(string_buffer, 0x0, BUFFER_SIZE);
 
                 // Change mode to password input
                 current_mode = 1;
+                
+            	Renderer::scr_print("Password: ", 1, 0, 10);
             }
             else if(current_mode == 1) { // Password
                 std::string pass(string_buffer);
@@ -171,11 +176,12 @@ int login_screen(Library *lib, Credentials *creds) {
                 // Illegal state for current_mode
                 return 0;
             }
-            continue;
         }
-        else if(c == 8) { // Backspace
-            current_pos--;
+        else if(c == 8 || c == 263) { // Backspace
+        	if(current_pos > 0)
+            	current_pos--;
             string_buffer[current_pos] = 0x0;
+            Renderer::scr_print(" ", current_mode, 10 + current_pos, 1); // Very evil! (using current_mode as row argument)
         }
         else if(c > 32 && c < 126 && current_pos < BUFFER_SIZE) {
             string_buffer[current_pos] = c;
@@ -184,33 +190,33 @@ int login_screen(Library *lib, Credentials *creds) {
 
         if(current_mode == 0) {
             Renderer::scr_print(string_buffer, 0, 10, BUFFER_SIZE);
-            Renderer::scr_render();
         }
         else if(current_mode == 1) {
             std::string stars(current_pos, '*');
             Renderer::scr_print(stars, 1, 10, BUFFER_SIZE);
-            Renderer::scr_render();
         }
+        Renderer::scr_render();
     }
 }
 
 int main() {
     std::srand(std::time(NULL));
-
+    
     int r = Renderer::init_renderer();
     if(r != 0) {
     	std::cerr << "Failed to initialize ncurses renderer!" << std::endl;
     	return 1;
     }
-    
-    Library *lib = new Library(".");
+    Renderer::cursor_hide(true);
 
+    Library *lib = new Library(".");
+	
     int success;
     Credentials creds;
     do {
         success = login_screen(lib, &creds);
     } while(!success);
-    input_loop(lib, &creds);
+    input_loop(lib);
 
     delete lib;
     Renderer::cleanup_renderer();

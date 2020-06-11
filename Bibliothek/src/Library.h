@@ -4,6 +4,9 @@
 #include <fstream>
 #include <regex>
 #include <vector>
+
+#include <openssl/sha.h>
+
 #include "Inventory.h"
 
 struct Credentials {
@@ -18,7 +21,9 @@ class Library {
         std::fstream *inv_file;
         std::fstream *cust_file;
 
+		std::string to_sha1_string(std::string input);
         int check(Credentials creds);
+        std::vector<std::string> tokenize(std::string text, char delim);
     public:
         Library(std::string path);
         ~Library();
