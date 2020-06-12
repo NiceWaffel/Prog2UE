@@ -1,0 +1,5 @@
+Bei Lotti Karotti spielen 2-4 Spieler darum, wer als erstes die Karotte erreicht.
+Das Programm simuliert ein solches Spiel. Jede Runde wird eine Karte gezogen. Diese
+Karte ist entweder eine Zugkarte für 1-3 Felder oder eine Drehkarte für die Karotte.
+Immer wenn die Karotte gedreht wird verschiebt sich ein Loch irgendwo auf dem Spielfeld.
+Wenn Figuren dort hineinfallen scheiden sie aus.

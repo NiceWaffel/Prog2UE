@@ -51,9 +51,9 @@ void move(int player, int fig, int rel_pos) {
 
 /* When a player has lost all its figures it lost overall */
 void check_lost(int player) {
-	if(players[player].pos[0] == POS_DEAD ||
-			players[player].pos[1] == POS_DEAD ||
-			players[player].pos[2] == POS_DEAD ||
+	if(players[player].pos[0] == POS_DEAD &&
+			players[player].pos[1] == POS_DEAD &&
+			players[player].pos[2] == POS_DEAD &&
 			players[player].pos[3] == POS_DEAD) {
 		std::cout << "Spieler " << player << " hat verloren!" << std::endl;
 		players[player].lost = true;
