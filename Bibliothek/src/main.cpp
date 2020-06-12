@@ -76,6 +76,10 @@ void sign_up_screen(Library *lib) {
 
 }
 
+void search_mode() {
+	
+}
+
 /* Main input loop for the list view */
 void input_loop(Library *lib) {
     int selected_index = 0;
@@ -94,7 +98,7 @@ void input_loop(Library *lib) {
         int c = Renderer::get_input();
         switch (c) {
             case 'f': // find book
-                // TODO
+            	search_mode();
                 break;
             case 'a': // add book when logged in as admin
                 // TODO

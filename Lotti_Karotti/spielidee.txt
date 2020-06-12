@@ -1,7 +1,0 @@
-Spielidee:
-
-Bei dem Wettlaufspiel Lotti Karotti können bis zu vier Spieler mitspielen.
-Ziel des Spiels ist es mit einer der eigenen Spielfiguren die Karotte in der Mitte zu erreichen.
-Spieler ziehen, wenn sie am Zug sind, eine Karte, die sie entweder 1-3 Felder laufen lässt, oder
-die Karotte drehen. Wenn die Karotte gedreht wird, entsteht irgendwo auf dem Spielfeld ein Loch,
-wo Spielfiguren die hineinfallen ausscheiden.
