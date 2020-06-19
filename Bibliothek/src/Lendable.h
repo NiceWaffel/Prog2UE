@@ -17,7 +17,7 @@ class Lendable {
         Lendable(int type, std::string title, int year, int lend_to);
         // Default destructor here
 
-        int lend_to(int id);
+        void lend_to(int id);
 
         // Getters and Setters
         unsigned int get_id();

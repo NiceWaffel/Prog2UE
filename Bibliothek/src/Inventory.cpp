@@ -1,5 +1,7 @@
 #include "Inventory.h"
 
+#define NOBODY 0
+
 /* Adds an item to the list of items and returns it's assigned ID */
 void Inventory::add_item(Lendable item) {
     m_items.push_back(item);
@@ -18,11 +20,9 @@ void Inventory::remove_item(unsigned int id) {
 int Inventory::lend_item(unsigned int item_id, Customer *customer) {
     for(int i = 0; i < m_items.size(); i++) {
         if(item_id == m_items[i].get_id()) {
-            // Lend item to customer if possible
-            if(m_items[i].lend_to(customer->get_id())) {
-                customer->add_item(item_id);
-                return 1;
-            }
+            // Lend item to customer
+           	m_items[i].lend_to(customer->get_id());
+            customer->add_item(item_id);
             return 0;
         }
     }

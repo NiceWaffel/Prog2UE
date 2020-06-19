@@ -28,7 +28,7 @@ void redraw_listview(Library *lib, int selected_index, std::vector<Lendable> ite
     Renderer::scr_print("Lent to", 1, TABLE_POS_LENTTO, 7);
 
     // Print info for all items in the list or all items that fit on screen
-    for(int i = 0; i < items.size() && i < Renderer::get_rows() - 5; i++) {
+    for(int i = 0; i < (int) items.size() && i < Renderer::get_rows() - 5; i++) {
         switch(items[i].get_type()) {
             case LENDABLE_TYPE_BOOK:
                 Renderer::scr_print("Book", i + 3, TABLE_POS_TYPE, 12);
@@ -73,11 +73,11 @@ void redraw_listview(Library *lib, int selected_index, std::vector<Lendable> ite
 }
 
 void sign_up_screen(Library *lib) {
-
+	if(lib) {}
 }
 
 void search_mode() {
-	
+	// TODO
 }
 
 /* Main input loop for the list view */
@@ -123,7 +123,7 @@ void input_loop(Library *lib) {
                     selected_index--;
                 break;
             case KEY_DOWN:
-                if(selected_index < shown_items.size() - 1)
+                if((long unsigned int) selected_index < shown_items.size() - 1)
                     selected_index++;
                 break;
             default:
