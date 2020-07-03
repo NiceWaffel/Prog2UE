@@ -29,38 +29,43 @@ void draw_listview(int selected_index, int &cur_offset, std::vector<Lendable> it
     Renderer::scr_print("Year", 1, TABLE_POS_YEAR, 4);
     Renderer::scr_print("Lent to", 1, TABLE_POS_LENTTO, 7);
 
-	int list_height = Renderer::get_rows() - 10;
-	if(list_height < 0)
-		return;
-	if(list_height > items.size())
-		list_height = items.size();
-	
-	if(selected_index <= cur_offset && selected_index > 0)
-		cur_offset--;
-	else if(selected_index >= cur_offset + list_height && selected_index <= items.size() - 1)
-		cur_offset++;
+	if(items.size() > 0) {
+		int list_height = Renderer::get_rows() - 10;
+		if(list_height < 0)
+			return;
+		if(list_height > items.size())
+			list_height = items.size();
 		
-	// print all visible items
-	for(int i = cur_offset; i < cur_offset + list_height; i++) {
-		int row = i - cur_offset + 3; // 3 lines of space above list for table heading
-		Renderer::scr_print(items[i].get_attribute("type"), row, TABLE_POS_TYPE,
-				TABLE_POS_TITLE - TABLE_POS_TYPE - 2);
-		Renderer::scr_print(items[i].get_attribute("title"), row, TABLE_POS_TITLE,
-				TABLE_POS_YEAR - TABLE_POS_TITLE - 2);
-		Renderer::scr_print(items[i].get_attribute("year"), row, TABLE_POS_YEAR,
-				TABLE_POS_LENTTO - TABLE_POS_YEAR - 2);
-		
-		if(items[i].get_attribute("lentto") != "unknown") {
-			int lentto_id = stoi(items[i].get_attribute("lentto"));
-			Renderer::scr_print(lib->get_customer(lentto_id).get_username(), row, TABLE_POS_LENTTO, 32);
+		if(selected_index <= cur_offset && selected_index > 0)
+			cur_offset--;
+		else if(selected_index >= cur_offset + list_height && selected_index <= items.size() - 1)
+			cur_offset++;
+			
+		// print all visible items
+		for(int i = cur_offset; i < cur_offset + list_height; i++) {
+			int row = i - cur_offset + 3; // 3 lines of space above list for table heading
+			Renderer::scr_print(items[i].get_attribute("type"), row, TABLE_POS_TYPE,
+					TABLE_POS_TITLE - TABLE_POS_TYPE - 2);
+			Renderer::scr_print(items[i].get_attribute("title"), row, TABLE_POS_TITLE,
+					TABLE_POS_YEAR - TABLE_POS_TITLE - 2);
+			Renderer::scr_print(items[i].get_attribute("year"), row, TABLE_POS_YEAR,
+					TABLE_POS_LENTTO - TABLE_POS_YEAR - 2);
+			
+			if(items[i].get_attribute("lentto") != "unknown") {
+				int lentto_id = stoi(items[i].get_attribute("lentto"));
+				Renderer::scr_print(lib->get_customer(lentto_id).get_username(), row, TABLE_POS_LENTTO, 32);
+			}
+			else
+				Renderer::scr_print("unknown", row, TABLE_POS_LENTTO, 32);
 		}
-		else
-			Renderer::scr_print("unknown", row, TABLE_POS_LENTTO, 32);
+
+		// Print selection identifier
+		Renderer::scr_print(">", selected_index - cur_offset + 3, 1, 1);
 	}
-
-	// Print selection identifier
-	Renderer::scr_print(">", selected_index - cur_offset + 3, 1, 1);
-
+	else {
+		Renderer::scr_print("Your search didn't yield any items!", 3, TABLE_POS_TYPE, 40);
+	}
+	
 	// Print login name
 	Renderer::scr_print("Logged in as: ", Renderer::get_rows() - 2, TABLE_POS_TYPE, 14);
 	Renderer::scr_print(lib->get_user().get_username(), Renderer::get_rows() - 2,
@@ -73,6 +78,9 @@ void draw_listview(int selected_index, int &cur_offset, std::vector<Lendable> it
 			binds += "  |  s - sign up";
 			break;
 		case 1: // customer
+			// Can't lend anything if list is empty
+			if(items.size() < 1)
+				break;
 			// If selected item is already lent to customer, give back hotkey is printed
 			// Else lend hotkey is printed
 			if(items[selected_index].get_attribute("lentto") == std::to_string(lib->get_user().get_id()))
@@ -196,7 +204,12 @@ void input_loop() {
 
 	while(1) {
 		shown_items = lib->search(search_term);
-		std::string lentto_id = shown_items[selected_index].get_attribute("lentto");
+		if(selected_index > shown_items.size())
+			selected_index = 0;
+		std::string lentto_id = "unknown";
+		if(shown_items.size() > 0)
+			lentto_id = shown_items[selected_index].get_attribute("lentto");
+		
 		draw_listview(selected_index, list_offset, shown_items);
 		
 		int ch = Renderer::get_input();
@@ -225,6 +238,10 @@ void input_loop() {
 					selected_index++;
 				break;
 			case 10: // Enter
+				// abort if list is empty
+				if(shown_items.size() < 1)
+					break;
+					
 				// check if lent to logged in user
 				if(lentto_id == std::to_string(lib->get_user().get_id()))
 					lib->give_back(shown_items[selected_index].get_id());
@@ -254,7 +271,7 @@ int main(int argc, char **argv) {
 	signal(SIGTERM, signal_handler);
 	signal(SIGINT, signal_handler);
 
-	lib = new Library("./inventory.txt", "./customers.txt");
+	lib = new Library("./inventory.txt", "./customers.txt", "./protocol.txt");
 
 	login_screen();
 	input_loop();

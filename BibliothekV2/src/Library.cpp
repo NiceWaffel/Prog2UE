@@ -99,10 +99,11 @@ void Library::load_customers_from_file() {
     }	
 }
 
-Library::Library(std::string inv_path, std::string cust_path) {
+Library::Library(std::string inv_path, std::string cust_path, std::string log_path) {
 	// Open files and call load functions
 	inv_file = new std::fstream(inv_path, std::fstream::in | std::fstream::out);
 	cust_file = new std::fstream(cust_path, std::fstream::in | std::fstream::out);
+	log_file = new std::fstream(log_path, std::fstream::out | std::fstream::app);
 
 	load_inventory_from_file();
 	load_customers_from_file();
@@ -118,12 +119,22 @@ Library::~Library() {
 		cust_file->close();
 		delete cust_file;
 	}
+	if(log_file) {
+		log_file->close();
+		delete log_file;
+	}
 }
 
 /* Tries to log in the user with the given credentials
  * Returns false if login failed for any reason, true if login was successful */
 bool Library::login(Credentials creds) {
 	std::string creds_pwhash = to_sha1_string(creds.password);
+
+	if(creds.username == "guest") {
+		Customer cust(-1, 0, "guest", "");
+		m_user = cust;
+		return true;
+	}
 
 	for(auto iter = m_customers.begin(); iter != m_customers.end(); iter++) {
 		if(iter->second.get_username() == creds.username &&
@@ -137,16 +148,48 @@ bool Library::login(Credentials creds) {
 	return false;
 }
 
+void Library::update_inventory_file() {
+	// TODO
+}
+
+void Library::update_customer_file() {
+	// TODO
+}
+
+void Library::log_print(std::string line) {
+	if(!log_file)
+		return;
+	*log_file << "[UTC: " << std::to_string(time(0)) << "] " << line << std::endl;
+}
+
+#include "Renderer.h"
+
 bool Library::lend(unsigned int lendable_id) {
 	// check if lend to someone else than library
-	// error message if that's the case
-	// TODO
-	return true;
+	// do nothing if that's the case
+	std::string cur_owner = m_inventory[lendable_id].get_attribute("lentto");
+	if(cur_owner == "unknown" || cur_owner == "0") {
+		m_inventory[lendable_id].put_attribute("lentto", std::to_string(get_user().get_id()));
+		log_print("User " + std::to_string(get_user().get_id()) +
+				" lends item with id "+ std::to_string(lendable_id));
+		return true;
+	}
+	Renderer::scr_error("Couldn't lend item!");
+	return false;
 }
 
 bool Library::give_back(unsigned int lendable_id) {
-	// TODO
-	return true;
+	// check if lend to user
+	// do nothing if that's not the case
+	std::string cur_owner = m_inventory[lendable_id].get_attribute("lentto");
+	if(cur_owner == std::to_string(get_user().get_id())) {
+		m_inventory[lendable_id].put_attribute("lentto", "unknown");
+		log_print("User " + std::to_string(get_user().get_id()) +
+				" gives back item with id "+ std::to_string(lendable_id));
+		return true;
+	}
+	Renderer::scr_error("Couldn't give back item!");
+	return false;
 }
 
 std::vector<Lendable> Library::search(std::string expr) {

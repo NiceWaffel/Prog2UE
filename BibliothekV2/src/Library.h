@@ -4,8 +4,10 @@
 #include <fstream>
 #include <regex>
 #include <vector>
+#include <ctime>
 
 #include <openssl/sha.h>
+
 
 #include "Customer.h"
 
@@ -25,19 +27,24 @@ class Library {
         
         std::fstream *inv_file;
         std::fstream *cust_file;
+        std::fstream *log_file;
 
         std::string to_sha1_string(std::string input);
         std::vector<std::string> tokenize(std::string text, char delim);
         
 		void load_inventory_from_file();
 		void load_customers_from_file();
+		void update_inventory_file();
+		void update_customer_file();
+
+		void log_print(std::string text);
     public:
 	    struct Credentials {
 	        std::string username;
 	        std::string password;
 	    };
 	    
-        Library(std::string inv_path, std::string cust_path);
+        Library(std::string inv_path, std::string cust_path, std::string log_path);
         ~Library();
 		
         bool login(Credentials creds);
