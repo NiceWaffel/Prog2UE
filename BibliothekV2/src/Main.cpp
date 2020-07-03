@@ -51,12 +51,12 @@ void draw_listview(int selected_index, int &cur_offset, std::vector<Lendable> it
 			Renderer::scr_print(items[i].get_attribute("year"), row, TABLE_POS_YEAR,
 					TABLE_POS_LENTTO - TABLE_POS_YEAR - 2);
 			
-			if(items[i].get_attribute("lentto") != "unknown") {
+			if(items[i].get_attribute("lentto") != "unknown" && items[i].get_attribute("lentto") != "0") {
 				int lentto_id = stoi(items[i].get_attribute("lentto"));
 				Renderer::scr_print(lib->get_customer(lentto_id).get_username(), row, TABLE_POS_LENTTO, 32);
 			}
 			else
-				Renderer::scr_print("unknown", row, TABLE_POS_LENTTO, 32);
+				Renderer::scr_print("nobody", row, TABLE_POS_LENTTO, 32);
 		}
 
 		// Print selection identifier
@@ -92,7 +92,7 @@ void draw_listview(int selected_index, int &cur_offset, std::vector<Lendable> it
 			// Not implemented: binds += "  |  a - add item";
 			break;
 		default:
-			// TODO throw exception and fix customer file
+			// TODO throw exception
 			break;
 	}
 	binds += "  |  q - quit";
@@ -179,6 +179,13 @@ std::string find_mode() {
 				return "";
 			case 10: // Enter
 				return buffer;
+			case 8:
+			case 263: // Backspace
+				if(!buffer.empty()) {
+					buffer.pop_back();
+					Renderer::scr_print(" ", Renderer::get_rows() - 4, buffer.length() + TABLE_POS_TYPE + 6, 1);
+				}
+				break;
 			default: // Ignore other keys
 				if(ch > 31 && ch < 127)
 					buffer.push_back(ch);
@@ -255,7 +262,7 @@ void input_loop() {
 }
 
 void resize_handler(int new_rows, int new_cols) {
-	// TODO
+	// TODO update
 }
 
 void signal_handler(int signum) {
@@ -274,6 +281,7 @@ int main(int argc, char **argv) {
 	lib = new Library("./inventory.txt", "./customers.txt", "./protocol.txt");
 
 	login_screen();
+	Renderer::set_cursor_visible(false);
 	input_loop();
 
 	quit();

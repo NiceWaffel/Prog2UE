@@ -31,6 +31,7 @@ class Library {
 
         std::string to_sha1_string(std::string input);
         std::vector<std::string> tokenize(std::string text, char delim);
+        int user_lent_count();
         
 		void load_inventory_from_file();
 		void load_customers_from_file();

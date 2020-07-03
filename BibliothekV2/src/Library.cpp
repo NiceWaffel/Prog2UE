@@ -131,7 +131,7 @@ bool Library::login(Credentials creds) {
 	std::string creds_pwhash = to_sha1_string(creds.password);
 
 	if(creds.username == "guest") {
-		Customer cust(-1, 0, "guest", "");
+		Customer cust(-1, 0, "guest", ""); // -1 as customer_id
 		m_user = cust;
 		return true;
 	}
@@ -149,7 +149,11 @@ bool Library::login(Credentials creds) {
 }
 
 void Library::update_inventory_file() {
+	return;
 	// TODO
+	for(auto iter = m_inventory.begin(); iter != m_inventory.end(); iter++) {
+		
+	}
 }
 
 void Library::update_customer_file() {
@@ -164,12 +168,23 @@ void Library::log_print(std::string line) {
 
 #include "Renderer.h"
 
+int Library::user_lent_count() {
+	int r = 0;
+	for(auto iter = m_inventory.begin(); iter != m_inventory.end(); iter++) {
+		if(iter->second.get_attribute("lentto") == std::to_string(get_user().get_id()))
+			r++;
+	}
+	return r;
+}
+
 bool Library::lend(unsigned int lendable_id) {
 	// check if lend to someone else than library
 	// do nothing if that's the case
+	
 	std::string cur_owner = m_inventory[lendable_id].get_attribute("lentto");
-	if(cur_owner == "unknown" || cur_owner == "0") {
+	if(cur_owner == "unknown" || cur_owner == "0" && user_lent_count() < CUSTOMER_MAX_LENDABLES) {
 		m_inventory[lendable_id].put_attribute("lentto", std::to_string(get_user().get_id()));
+		update_inventory_file();
 		log_print("User " + std::to_string(get_user().get_id()) +
 				" lends item with id "+ std::to_string(lendable_id));
 		return true;
@@ -184,6 +199,7 @@ bool Library::give_back(unsigned int lendable_id) {
 	std::string cur_owner = m_inventory[lendable_id].get_attribute("lentto");
 	if(cur_owner == std::to_string(get_user().get_id())) {
 		m_inventory[lendable_id].put_attribute("lentto", "unknown");
+		update_inventory_file();
 		log_print("User " + std::to_string(get_user().get_id()) +
 				" gives back item with id "+ std::to_string(lendable_id));
 		return true;
