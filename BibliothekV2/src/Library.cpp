@@ -1,15 +1,16 @@
 #include "Library.h"
 
-/* Doesn't have to be changeable according to instructions */
-#define CUSTOMER_MAX_LENDABLES 2
-
-/* Splits a string at delim and returns a vector with the split parts (tokens) */
+/* Splits a string at delim and returns a vector with the split parts (tokens)
+ * Tokens of length 0 are ignored and will not end up in the return vector
+ * Whitespace does not get trimmed away */
 std::vector<std::string> Library::tokenize(std::string text, char delim) {
     std::vector<std::string> return_val;
     int prev_pos = 0;
     for(int i = 0; i < text.length(); i++) {
         if(text[i] == delim) {
-            return_val.push_back(text.substr(prev_pos, i - prev_pos));
+        	std::string substr = text.substr(prev_pos, i - prev_pos);
+        	if(substr.length() > 0)
+            	return_val.push_back(substr);
 			prev_pos = i + 1; // delim wil not be part of any token
     	}
     }
@@ -35,56 +36,136 @@ std::string Library::to_sha1_string(std::string input) {
     return sha1_string;
 }
 
-/* Returns 1 if credentials were valid, 0 otherwise */
-int Library::check(Credentials creds) {
-    std::string line_buffer;
-    std::string b_username;
-    std::string b_pwhash;
-    
-    std::string creds_pwhash = to_sha1_string(creds.password);
+/* Loads inventory from file specified in constructor
+ * ':' in any inside part of a token will lead to broken behavior */
+void Library::load_inventory_from_file() {
+	if(!inv_file) {
+		// TODO throw exception
+	}
 
-    while(std::getline(*cust_file, line_buffer)) {
+	std::string line_buffer = "";
+	while(std::getline(*inv_file, line_buffer)) {
         std::vector<std::string> tokens = tokenize(line_buffer, ':');
-        b_username = tokens[0];
-        b_pwhash = tokens[1];
+        if(tokens.size() < 2)
+        	continue;
 
-        if(b_username.compare(creds.username) == 0 && b_pwhash.compare(creds_pwhash) == 0)
-                return 1;
+        // First token has to be the id
+        int item_id = stoi(tokens[0]);
+        tokens.erase(tokens.begin());
+        
+        Lendable item(item_id);
+        
+        // Get all attributes for all tokens
+        for(auto token : tokens) {
+        	std::vector<std::string> key_value_pair = tokenize(token, '=');
+        	if(key_value_pair.size() < 2)
+        		continue;
+
+			// Everything before the first '=' is the token key
+        	// Everything behind the first '=' is the token value
+        	std::string key = key_value_pair[0];
+        	std::string value = key_value_pair[1];
+        	for(int i = 2; i < key_value_pair.size(); i++) {
+        		value += "=";
+        		value += key_value_pair[i];
+        	}
+
+        	item.put_attribute(key, value);
+        }
+        m_inventory.insert_or_assign(item_id, item);
     }
-    cust_file->clear();
-    cust_file->seekg(0);
-    return 0;
 }
 
-void Library::load_inventory_from_file() {
-	if(!inv_file)
-		return;
+void Library::load_customers_from_file() {
+	if(!cust_file) {
+		// TODO throw exception
+	}
+	std::string line_buffer;
+	int b_id, b_perm;
+	std::string b_uname, b_pwhash;
 
-	// TODO
+	while(std::getline(*cust_file, line_buffer)) {
+        std::vector<std::string> tokens = tokenize(line_buffer, ':');
+        if(tokens.size() < 4)
+        	continue;
+        
+        b_id = stoi(tokens[0]);
+        b_uname = tokens[1];
+        b_perm = stoi(tokens[2]);
+        b_pwhash = tokens[3];
+        
+        Customer cust(b_id, b_perm, b_uname, b_pwhash);
+        m_customers.insert_or_assign(b_id, cust);
+    }	
 }
 
 Library::Library(std::string inv_path, std::string cust_path) {
-	// TODO open files and call load_inventory_from_file
+	// Open files and call load functions
+	inv_file = new std::fstream(inv_path, std::fstream::in | std::fstream::out);
+	cust_file = new std::fstream(cust_path, std::fstream::in | std::fstream::out);
+
+	load_inventory_from_file();
+	load_customers_from_file();
 }
 
 Library::~Library() {
 	// Close open files
-	inv_file->close();
-	cust_file->close();
-	delete inv_file;
-	delete cust_file;
+	if(inv_file) {
+		inv_file->close();
+		delete inv_file;
+	}
+	if(cust_file) {
+		cust_file->close();
+		delete cust_file;
+	}
 }
 
 /* Tries to log in the user with the given credentials
  * Returns false if login failed for any reason, true if login was successful */
 bool Library::login(Credentials creds) {
-	// TODO
+	std::string creds_pwhash = to_sha1_string(creds.password);
+
+	for(auto iter = m_customers.begin(); iter != m_customers.end(); iter++) {
+		if(iter->second.get_username() == creds.username &&
+				iter->second.get_pwhash() == creds_pwhash) {
+			// Credentials are valid
+			m_user = iter->second;
+			return true;
+		}
+	}
+	
+	return false;
 }
 
-Customer Library::get_login_customer() {
+bool Library::lend(unsigned int lendable_id) {
+	// check if lend to someone else than library
+	// error message if that's the case
 	// TODO
+	return true;
+}
+
+bool Library::give_back(unsigned int lendable_id) {
+	// TODO
+	return true;
+}
+
+std::vector<Lendable> Library::search(std::string expr) {
+	std::vector<Lendable> result;
+
+	// search through all items
+	for(auto iter = m_inventory.begin(); iter != m_inventory.end(); iter++) {
+		if(iter->second.matches_expression(expr)) {
+			Lendable l = iter->second;
+			result.push_back(l);
+		}
+	}
+	return result;
+}
+
+Customer Library::get_user() {
+	return m_user;
 }
 
 Customer Library::get_customer(int customer_id) {
-	// TODO
+	return m_customers[customer_id];
 }

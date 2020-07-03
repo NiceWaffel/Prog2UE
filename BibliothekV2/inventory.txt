@@ -1,0 +1,4 @@
+1:title=Harry Potter:year=1999:lentto=0:type=book
+2:title=The Fault In Our Stars:year=2006:lentto=0:type=book
+3:title=GTA San Andreas:year=2007:lentto=0:type=videogame
+4:title=The Witcher 3:year=2015:lentto=1:type=videogame

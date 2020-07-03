@@ -1,5 +1,10 @@
 #include "Renderer.h"
 
+
+char *Renderer::screen_buffer;
+int Renderer::ter_rows, Renderer::ter_cols;
+std::vector<void (*)(int, int)> Renderer::resize_handlers;
+
 Renderer::Renderer() {}
 
 Renderer::~Renderer() {}
@@ -30,11 +35,13 @@ void Renderer::handle_winch(int sig) {
 
 /* Initializes the Renderer instance and ncurses */
 int Renderer::init_renderer() {
-	initscr();				// Initialze ncurses
-	cbreak();				// Disables line buffering
-	noecho();				// Disable input echoing
-	keypad(stdscr, TRUE);	// Enable arrow keys
-	clear();				// Clear the screen
+	initscr();					// Initialze ncurses
+	cbreak();					// Disables line buffering
+	noecho();					// Disable input echoing
+	keypad(stdscr, TRUE);		// Enable arrow keys
+	//nonl();						// Disable return key
+	//intrflush(stdscr, FALSE);	// Disable flush on interrupt
+	clear();					// Clear the screen
 
 	upd_tersz();
 
@@ -42,7 +49,7 @@ int Renderer::init_renderer() {
 	if(screen_buffer == nullptr)
 		return 1;
 
-	signal(SIGWINCH, handle_winch);	// Register the signal handler
+	signal(SIGWINCH, handle_winch);	// Register the signal handler for terminal resizes
 
 	return 0;
 }
@@ -52,12 +59,19 @@ void Renderer::cleanup_renderer() {
 	endwin();
 }
 
-int Renderer::cursor_hide(bool hidden) {
-	return curs_set(!hidden);
+int Renderer::set_cursor_visible(bool visible) {
+	return curs_set(visible);
 }
 
-void Renderer::cursor_position(int row, int col) {
-	// TODO
+void Renderer::set_cursor_pos(int row, int col) {
+	move(row, col);
+	refresh();
+}
+
+Renderer::Position Renderer::get_cursor_pos() {
+	int r, c;
+	getyx(stdscr, r, c);
+	return Position{r, c};
 }
 
 /* Registers a callback function for resize events.
